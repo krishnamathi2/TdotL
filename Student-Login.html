@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Login - Techers.Live</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eaf2ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    form {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    input[type="text"], input[type="password"], input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    input[type="submit"] {
+      background-color: #0077cc;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYh5ZSRrRjKS4wsAJdk2by_gyOcrAl_tw",
+      authDomain: "tdotl-1e5ec.firebaseapp.com",
+      databaseURL: "https://tdotl-1e5ec-default-rtdb.firebaseio.com",
+      projectId: "tdotl-1e5ec",
+      storageBucket: "tdotl-1e5ec.appspot.com",
+      messagingSenderId: "122840143724",
+      appId: "1:122840143724:web:8c2f6357d8d567813e8549"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function handleStudentLogin(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const whatsapp = document.getElementById("whatsapp").value.trim();
+      const studentId = document.getElementById("student_id").value.trim();
+
+      // Redirect immediately
+      const url = `Student-Dashboard.html?name=${encodeURIComponent(name)}&id=${encodeURIComponent(studentId)}&whatsapp=${encodeURIComponent(whatsapp)}`;
+      window.location.href = url;
+
+      // Store data in Firebase after redirect
+      setTimeout(() => {
+        db.ref("students/" + studentId).set({
+          name,
+          whatsapp,
+          id: studentId
+        });
+
+        db.ref("onlineStudents/" + studentId).set({
+          name,
+          studentId,
+          timestamp: new Date().toISOString()
+        });
+      }, 1000);
+    }
+  </script>
+</head>
+<body>
+  <h2>Student Login</h2>
+  <form onsubmit="handleStudentLogin(event)">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="tel" id="whatsapp" placeholder="WhatsApp Number" required pattern="[0-9]{10}">
+    <input type="text" id="student_id" placeholder="Student ID" required>
+    <input type="password" placeholder="Password" required>
+    <br>
+    <input type="submit" value="Login">
+  </form>
+</body>
+</html>

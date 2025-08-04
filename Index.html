@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Techers.Live</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h1 {
+      color: #333;
+    }
+    .button-group {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 220px;
+    }
+    .student-login { background-color: #1a73e8; color: white; }
+    .student-signup { background-color: #4caf50; color: white; }
+    .teacher-login { background-color: #ff8c00; color: white; }
+    .teacher-signup { background-color: #d84315; color: white; }
+  </style>
+</head>
+<body>
+  <h1>Techers.Live</h1>
+
+  <div class="button-group">
+    <button class="student-login" onclick="openWindow('Student-Login.html')">Student Login</button>
+    <button class="student-signup" onclick="openWindow('Student-Signup.html')">Student Sign Up</button>
+    <button class="teacher-login" onclick="openWindow('Teacher-Login.html')">Teacher Login</button>
+    <button class="teacher-signup" onclick="openWindow('Teacher-Signup.html')">Teacher Sign Up</button>
+  </div>
+
+  <script>
+    function openWindow(url) {
+      window.open(url, '_blank', 'width=500,height=600');
+    }
+  </script>
+</body>
+</html>

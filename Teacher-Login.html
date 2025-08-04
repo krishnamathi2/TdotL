@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Login - Techers.Live</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff5e6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    h2 {
+      color: #333;
+    }
+    form {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+    }
+    input[type="text"], input[type="password"], input[type="tel"] {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    input[type="submit"] {
+      background-color: #ff8c00;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYh5ZSRrRjKS4wsAJdk2by_gyOcrAl_tw",
+      authDomain: "tdotl-1e5ec.firebaseapp.com",
+      databaseURL: "https://tdotl-1e5ec-default-rtdb.firebaseio.com",
+      projectId: "tdotl-1e5ec",
+      storageBucket: "tdotl-1e5ec.appspot.com",
+      messagingSenderId: "122840143724",
+      appId: "1:122840143724:web:8c2f6357d8d567813e8549"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function handleLogin(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const whatsapp = document.getElementById("whatsapp").value.trim();
+      const teacherId = document.getElementById("teacher_id").value.trim();
+
+      // Save to Firebase first
+      db.ref("teachers/" + teacherId).set({
+        name,
+        whatsapp,
+        id: teacherId
+      });
+
+      db.ref("onlineTeachers/" + teacherId).set({
+        name,
+        teacherId, // ✅ Key must be exactly this
+        timestamp: new Date().toISOString()
+      }, (error) => {
+        if (error) {
+          alert("Failed to write teacher info.");
+        } else {
+          // Only redirect if write succeeded
+          const url = `Teacher-Dashboard.html?name=${encodeURIComponent(name)}&whatsapp=${encodeURIComponent(whatsapp)}&id=${encodeURIComponent(teacherId)}`;
+          window.location.href = url;
+        }
+      });
+    }
+  </script>
+</head>
+<body>
+  <h2>Teacher Login</h2>
+  <form onsubmit="handleLogin(event)">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="tel" id="whatsapp" placeholder="WhatsApp Number" required pattern="[0-9]{10}" title="Enter 10 digit number">
+    <input type="text" id="teacher_id" placeholder="Teacher ID" required>
+    <input type="password" placeholder="Password" required>
+    <br>
+    <input type="submit" value="Login">
+  </form>
+</body>
+</html>

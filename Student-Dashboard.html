@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Dashboard - Techers.Live</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eaf2ff;
+      padding: 30px;
+      text-align: center;
+    }
+    .teacher-box {
+      margin-bottom: 40px;
+    }
+    iframe {
+      width: 320px;
+      height: 240px;
+      border: none;
+      margin-top: 10px;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYh5ZSRrRjKS4wsAJdk2by_gyOcrAl_tw",
+      authDomain: "tdotl-1e5ec.firebaseapp.com",
+      databaseURL: "https://tdotl-1e5ec-default-rtdb.firebaseio.com",
+      projectId: "tdotl-1e5ec",
+      storageBucket: "tdotl-1e5ec.appspot.com",
+      messagingSenderId: "122840143724",
+      appId: "1:122840143724:web:8c2f6357d8d567813e8549"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      const studentName = params.get("name") || "Student";
+      document.getElementById("welcome").textContent = `Welcome, ${studentName}!`;
+
+      db.ref("onlineTeachers").on("value", (snapshot) => {
+        const container = document.getElementById("teacherVideos");
+        container.innerHTML = "";
+
+        const teachers = snapshot.val();
+        if (!teachers) {
+          container.innerHTML = "<p>No teachers online</p>";
+          return;
+        }
+
+        Object.values(teachers).forEach((teacher) => {
+          const box = document.createElement("div");
+          box.className = "teacher-box";
+
+          const name = document.createElement("h3");
+          name.textContent = `🟢 ${teacher.name}`;
+
+          const iframe = document.createElement("iframe");
+          iframe.src = `https://meet.jit.si/${teacher.roomId}`;
+          iframe.allow = "camera; microphone; fullscreen; display-capture";
+
+          box.appendChild(name);
+          box.appendChild(iframe);
+          container.appendChild(box);
+        });
+      });
+    };
+  </script>
+</head>
+<body>
+  <h1 id="welcome">Welcome, Student!</h1>
+  <h2>Live Teacher Streams</h2>
+  <div id="teacherVideos"></div>
+</body>
+</html>
+

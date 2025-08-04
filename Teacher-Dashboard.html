@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Teacher Dashboard - Techers.Live</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff5e6;
+      padding: 30px;
+      text-align: center;
+    }
+    iframe {
+      border: none;
+      width: 800px;
+      height: 450px;
+      margin-top: 20px;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYh5ZSRrRjKS4wsAJdk2by_gyOcrAl_tw",
+      authDomain: "tdotl-1e5ec.firebaseapp.com",
+      databaseURL: "https://tdotl-1e5ec-default-rtdb.firebaseio.com",
+      projectId: "tdotl-1e5ec",
+      storageBucket: "tdotl-1e5ec.appspot.com",
+      messagingSenderId: "122840143724",
+      appId: "1:122840143724:web:8c2f6357d8d567813e8549"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    window.onload = () => {
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get("name") || "Teacher";
+      const whatsapp = params.get("whatsapp") || "";
+      const teacherId = params.get("id") || "";
+
+      document.getElementById("welcome").textContent = `Welcome, ${name}`;
+
+      // Generate secure, unique room ID
+      const roomId = `room_${teacherId}_${Date.now()}`;
+
+      // Store online teacher status with room ID
+      db.ref("onlineTeachers/" + teacherId).set({
+        name,
+        teacherId,
+        whatsapp,
+        roomId,
+        timestamp: new Date().toISOString()
+      });
+
+      // Display Jitsi Meet iframe
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://meet.jit.si/${roomId}`;
+      iframe.allow = "camera; microphone; fullscreen; display-capture";
+      document.getElementById("jitsiContainer").appendChild(iframe);
+    };
+  </script>
+</head>
+<body>
+  <h1 id="welcome">Welcome, Teacher</h1>
+  <div id="jitsiContainer"></div>
+</body>
+</html>
